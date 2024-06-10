@@ -163,7 +163,7 @@ void send_request_date()
 
 }
 
-int tcp_gateway( void ){
+int ""( void ){
     printf("\n *** Caso 3 *** \n");
     send_data_task=WICED_TRUE;
 
@@ -328,7 +328,7 @@ int tcp_gateway( void ){
                           wiced_rtos_delay_microseconds( 10 );
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi,data_btt[f].fallen);
 //                          sprintf(data_out,"\nB;%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].rssi);
-                          sprintf(data_out,"\nB;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
+                          sprintf(data_out,"\nBM;%s,%s,%s,%s,%s\r\n",mac_ap,data_btt[f].mac_bt,mac_wifi,data_btt[f].type,data_btt[f].rssi);
 
                                           memcpy(data_btt[f].mac_bt,NULL,17);
                                           memcpy(data_btt[f].type,NULL,17);
@@ -373,63 +373,11 @@ int tcp_gateway( void ){
 
               }
 
-              /* Aqui pondre la cadena HVT */
-//              if((_wifi_status == WICED_TRUE) && strlen(_HVT_Text) != 0)
-//              {
-//                  sprintf(data_out,"\nHVT;%s\r\n",_HVT_Text);
-//
-//                  result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                  if(result==WICED_TCPIP_SUCCESS){
-//                      send_data_task=WICED_TRUE;
-//                  }
-//                  memset(_HVT_Text,NULL,150);
-//              }
-
-              /* Aqui va la cadena HE */
-
-//              sprintf(data_out,"\n%s\r\n",_HE_Hola);  /* FIn */
-//              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//              if(result==WICED_TCPIP_SUCCESS){
-//                  send_data_task=WICED_TRUE;
-//              }
-//
-//              sprintf(data_out,"\n%s\r\n",_HE_OTRO);  /* Inicio */
-//              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//              if(result==WICED_TCPIP_SUCCESS){
-//                  send_data_task=WICED_TRUE;
-//              }
-//
-//              uint8_t b;
-//              for(b =0;b<30;b++)
-//              {
-//                  if((master_data2[b].flag == 1))
-//                  {
-//                      wiced_rtos_delay_microseconds( 10 );
-//                      printf("Entra en :%d\n",b);
-//                      sprintf(data_out,
-//                              "\nHX;{\"LogId\":%s,\"DeviceId\":\"%s\",\"Reader\":\"%s\",\"EnterTime\":\"%s-%s\",\"OutTime\":\"%s-%s\"}\r\n"
-//                              ,master_data2[b].id,master_data2[b].bt_device.mac_wifi,master_data2[b].bt_device.mac_bt,master_data2[b].date,master_data2[b].time_start,master_data2[b].date,master_data2[b].time_end);
-//
-//                      result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-//                      if(result==WICED_TCPIP_SUCCESS){
-//                          send_data_task=WICED_TRUE;
-//                      }
-//                      else
-//                      {
-//                          printf("No mando nada\n");
-//                      }
-//                      printf("%s\n",data_out);
-//                      memset(master_data2[b].bt_device.mac_bt,NULL,18);
-//                      memset(master_data2[b].time_start,NULL,12);
-//                      memset(master_data2[b].time_end,NULL,12);
-//                      memset(master_data2[b].id,NULL,4);
-//                      master_data2[b].flag=0;
-//
-//                      AUX_BEACON[b].mac_bt;
-//                  }
-//
-//              }
-              /* <----------------------> */
+              sprintf(data_out,"C;{\"Vehicle\":\"%s\",\"AP\":\"%s\",\"Operator\":\"%s\"}\n",&mac_wifi,&mac_ap,&mac_bt_D);
+              result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
+              if(result==WICED_TCPIP_SUCCESS){
+                  send_data_task=WICED_TRUE;
+              }
 
               memset(data_out,NULL,1000);
 //              key=1;
@@ -838,7 +786,7 @@ int tcp_client_geo( )
                      while( token != NULL ) {
                          //            printf( " >>>>>  %s\n", token );
                          wiced_rtos_delay_microseconds( 10 );
-                         sprintf(data_out,"\nHE;%s\r\n",token);
+                         sprintf(data_out,"\nHX;%s\r\n",token);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          printf("%s\n",data_out);
                          if(result==WICED_TCPIP_SUCCESS){
@@ -890,7 +838,7 @@ int tcp_client_geo( )
                          wiced_rtos_delay_microseconds( 10 );
                          printf("Entra en :%d\n",b);
 
-                         sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
+                         sprintf(data_out,"\nHX;%s\r\n",master_data2[b].all_tex);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
                              send_data_task=WICED_TRUE;
@@ -901,7 +849,7 @@ int tcp_client_geo( )
                              printf("No mando nada\n");
                          }
 
-                         sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
+                         sprintf(data_out,"\nHX;%s\r\n",master_data2[b].all_tex);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
                              send_data_task=WICED_TRUE;
