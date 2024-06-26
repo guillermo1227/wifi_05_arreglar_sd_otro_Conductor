@@ -138,7 +138,7 @@ static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
             {
                 machineFlagControl = 1;
                 _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
-                printf("\n _machine_flag = WICED_TRUE \n");
+                printf("\n _machine_flag = WICED_TRUE1 \n");
                 machineFlagControl = 0;
             }
         }
@@ -256,11 +256,11 @@ static wiced_result_t Collision_V( void ){
 
 static wiced_result_t Beacon_V( void ){      /* Datos de HE; */
 
-    printf("Timer HE %d\n",count_save);
+    printf("Timer HE %d Total de beacons adentro %d\n",count_save,count_beacon);
 static uint8_t h=0;
 if(h < 1)
 {
-    for(int j=0;j<30;j++)
+    for(int j=1;j<30;j++)
     {
         master_data2[j].flag=0;
     }
@@ -277,8 +277,8 @@ if(h < 1)
     else if(count_save==TIME_LOC){
             if(_wifi_status == WICED_TRUE)
             {
-                printf("Entro en HE\n");
-            uint8_t cont = 0, b=1;
+            printf("Entro en HE\n");
+            uint8_t cont = 1, b=1;
             while(b <buff_aux)
             {
                 if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0))
@@ -298,22 +298,14 @@ if(h < 1)
                         master_data2[cont].flag=1;
 
 
-//                        printf("********* Guardado en posicion para mandar %d\n",cont);
-//                        memcpy(master_data2[cont].bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
-//                        memcpy(master_data2[cont].date,date_get_log(&i2c_rtc),12);
-//                        strcpy(master_data2[cont].time_start,AUX_BEACON[b].time_start);
-//                        strcpy(master_data2[cont].time_end,AUX_BEACON[b].time_end);
-//                        strcpy(master_data2[cont].bt_device.mac_wifi,s_Mac_W);
-//                        strcpy(master_data2[cont].state,"off");
-//                        strcpy(master_data2[cont].id,"700");    /* The value of 700 is a number that express online value */
-//                        master_data2[cont].flag=1;
-
                         memset(AUX_BEACON[b].mac_bt,NULL,17);
                         memset(AUX_BEACON[b].time_start,NULL,11);
                         memset(AUX_BEACON[b].time_end,NULL,11);
 
                         cont++;
                         b++;
+                        //count_beacon--; /* Puesta por mi, reduce el conteo genera de los dispositivos dentro */
+
                         //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
 
                         if(machineFlagControl == 0)
@@ -338,12 +330,14 @@ if(h < 1)
             }
 
             count_save=1;               /* Every 6 counts it does what is in the function */
+
             if(count_beacon<buff_aux){  /* Que pasa cuando count_beacon es mayo a 100, si encotro */
                 count_beacon=1;
             }
         }
         else if(_wifi_status == WICED_FALSE)
         {
+            printf("Opcion sin conexion \n");
             for(int b=1;b<buff_aux;b++){
                 if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
                     wiced_filesystem_unmount(&fs_handle);
@@ -367,6 +361,8 @@ if(h < 1)
                         memset(AUX_BEACON[b].mac_bt,NULL,17);
                         memset(AUX_BEACON[b].time_start,NULL,11);
                         memset(AUX_BEACON[b].time_end,NULL,11);
+
+                        //count_beacon--; /* Puesta por mi, reduce el conteo genera de los dispositivos dentro */
                     }
                     else{
                         printf("Excedio el limite %d\n",atoi(id_count));
@@ -377,6 +373,7 @@ if(h < 1)
                 }
             }
             count_save=1;
+
             if(count_beacon<buff_aux){  /* Que pasa cuando count_beacon es mayo a 100, si encotro */
                 count_beacon=1;
             }
