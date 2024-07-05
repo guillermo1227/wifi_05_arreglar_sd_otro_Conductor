@@ -269,7 +269,7 @@ if(h < 1)
 
     if(count_save==(TIME_LOC/2))
     {
-        for(int b=1;b<buff_aux;b++)
+        for(int b=1;b<buff_aux;b++)  /* Cambie el 1 por 0 */
         {
             AUX_BEACON[b].flag=0;
         }
@@ -278,13 +278,11 @@ if(h < 1)
             if(_wifi_status == WICED_TRUE)
             {
             printf("Entro en HE\n");
-            uint8_t cont = 1, b=1;
+            uint8_t b=1;  /* Uso el cont porque son mas variables y pueden irce diferentes variables */
             while(b <buff_aux)
             {
                 if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0))
                 {
-                    if(master_data2[cont].flag == 0)
-                    {
                         memcpy(data_alone.bt_device.mac_bt,AUX_BEACON[b].mac_bt,19);
                         memcpy(data_alone.date,date_get_log(&i2c_rtc),12);
                         strcpy(data_alone.time_start,AUX_BEACON[b].time_start);
@@ -293,16 +291,14 @@ if(h < 1)
                         strcpy(data_alone.state,"off");
                         strcpy(data_alone.id,"700");    /* The value of 700 is a number that express online value */
 
-                        strcpy(master_data2[cont].all_tex,data_to_json(&data_alone));
-                        printf("**** Texto compiado %s\n",master_data2[cont].all_tex);
-                        master_data2[cont].flag=1;
+                        strcpy(master_data2[b].all_tex,data_to_json(&data_alone));
+                        printf("**** Texto compiado %s\n",master_data2[b].all_tex);
+                        master_data2[b].flag=1;
 
 
                         memset(AUX_BEACON[b].mac_bt,NULL,17);
                         memset(AUX_BEACON[b].time_start,NULL,11);
                         memset(AUX_BEACON[b].time_end,NULL,11);
-
-                        cont++;
                         b++;
                         //count_beacon--; /* Puesta por mi, reduce el conteo genera de los dispositivos dentro */
 
@@ -316,11 +312,6 @@ if(h < 1)
                             machineFlagControl = 0;
                         }
                         //wiced_rtos_set_semaphore(&StateMachineSemaphore);
-                    }
-                    else
-                    {
-                        cont++;
-                    }
                     reg_incoming=WICED_FALSE;
                 }
                 else

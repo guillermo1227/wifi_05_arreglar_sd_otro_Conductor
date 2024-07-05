@@ -815,7 +815,7 @@ int tcp_client_geo( )
                  count_tcp=0;
 
                  uint8_t b;
-                 for(b =0;b<30;b++)  /* I put only 30 because is no comun taht the tag see more of 6 beacons in some point */
+                 for(b =1;b<30;b++)  /* I put only 30 because is no comun taht the tag see more of 6 beacons in some point */
                  {
                      if((master_data2[b].flag == 1))
                      {

@@ -118,7 +118,7 @@ uint8_t count_l=1;
 uint8_t* proximity=5;
 wiced_bool_t Evacaution=WICED_FALSE;
 
-int count_beacon=1;
+int count_beacon=0; //1
 int count_save=1;
 int count_collision=1;
 int count_save_collision=1;
@@ -264,7 +264,7 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
             switch (x) {
                 case 0:
                     if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){  //Tamaño mayor a 15, y si hay 5 : ocalizados en la cadena
-                        for(int b=0;b<buff_aux;b++){  /* *** Va a buscar si ya tiene registro de el *** */
+                        for(int b=1;b<buff_aux;b++){  /* *** Va a buscar si ya tiene registro de el *** */
                             if(!(strstr(AUX_BEACON[b].mac_bt,cvl1))){ /* No esta aqui */
 
                             }
@@ -274,7 +274,6 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
                                 if(strlen(AUX_BEACON[b].time_start)!=0){ /* Si ya tiene registro de entrada, se pone el registro de salida */
                                     strcpy(AUX_BEACON[b].time_end,time_get(&i2c_rtc));
                                     printf("OK end Toma valor de salida \n");
-                                    //sprintf(_HE_Hola,"HX;END %d: %s",b,AUX_BEACON[b].mac_bt);
                                 }
                                 AUX_BEACON[b].flag=1;
                                 wirte1=WICED_TRUE;
@@ -283,29 +282,24 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
                         if(wirte1==WICED_FALSE){  /* No esta, guardamos la mac de beacon */
                             wirte1=WICED_TRUE;
                             if(count_beacon<buff_aux){
-
                                 for(uint8_t i=1;i<buff_aux;i++)  /* count beacon = 3 */
                                 {
-                                    if(strlen(AUX_BEACON[count_beacon].mac_bt)==0 || strlen(AUX_BEACON[count_beacon].mac_bt)==NULL)
+                                    if(strlen(AUX_BEACON[i].mac_bt)==0 || strlen(AUX_BEACON[i].mac_bt)==NULL)
                                     {
-                                        memcpy(AUX_BEACON[count_beacon].mac_bt,cvl1,17);
-                                        if(strlen(AUX_BEACON[count_beacon].time_start)<1)
+                                        memcpy(AUX_BEACON[i].mac_bt,cvl1,17);
+                                        if(strlen(AUX_BEACON[i].time_start)<1)
                                         {
-                                            strcpy(AUX_BEACON[count_beacon].time_start,time_get(&i2c_rtc));
+                                            strcpy(AUX_BEACON[i].time_start,time_get(&i2c_rtc));
                                             printf("OK BEAC GEOSF\n");
-                                            printf("\n Variable para flujo de lo guardado de GEOSF %d\n",count_beacon);
-                                            count_beacon=count_beacon+1;
+                                            printf("\n Variable para flujo de lo guardado de GEOSF %d\n",i);
+                                            count_beacon=+1;
                                         }
                                         break;
-                                    }
-                                    else
-                                    {
-                                        count_beacon=count_beacon+1;
                                     }
                                 }
                             }
                             //                                count_beacon++;
-                        }
+                        }  /* Termina */
                     }
                 break;
                 case 1:
