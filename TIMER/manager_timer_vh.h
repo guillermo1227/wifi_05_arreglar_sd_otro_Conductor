@@ -134,13 +134,10 @@ static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
 //            _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
 //            printf("\n _machine_flag = WICED_TRUE \n");
 //            wiced_rtos_set_semaphore(&StateMachineSemaphore);
-            if(machineFlagControl == 0)
-            {
-                machineFlagControl = 1;
+
                 _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
-                printf("\n _machine_flag = WICED_TRUE1 \n");
-                machineFlagControl = 0;
-            }
+                printf("\n _machine_flag = WICED_TRUE1\n");
+
         }
     }
     else if((_wifi_status == WICED_FALSE) || (_wifi_status == WICED_FALSE))
@@ -296,21 +293,17 @@ if(h < 1)
                         master_data2[b].flag=1;
 
 
-                        memset(AUX_BEACON[b].mac_bt,NULL,17);
-                        memset(AUX_BEACON[b].time_start,NULL,11);
-                        memset(AUX_BEACON[b].time_end,NULL,11);
+                        memset(AUX_BEACON[b].mac_bt,NULL,18);
+                        memset(AUX_BEACON[b].time_start,NULL,12);
+                        memset(AUX_BEACON[b].time_end,NULL,12);
                         b++;
                         //count_beacon--; /* Puesta por mi, reduce el conteo genera de los dispositivos dentro */
 
                         //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
 
-                        if(machineFlagControl == 0)
-                        {
-                            machineFlagControl = 1;
-                            _machine_flag = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
-                            printf("\n _machine_flag = WICED_TRUE \n");
-                            machineFlagControl = 0;
-                        }
+                        _machine_flag2 = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
+                        printf("\n _machine_flag2 = WICED_TRUE \n");
+
                         //wiced_rtos_set_semaphore(&StateMachineSemaphore);
                     reg_incoming=WICED_FALSE;
                 }
@@ -349,9 +342,9 @@ if(h < 1)
 
                     if(atoi(id_count)<=limit_save_file){
                         write_data(SF_ROOT,date_get(&i2c_rtc),master_data,&fs_handle);
-                        memset(AUX_BEACON[b].mac_bt,NULL,17);
-                        memset(AUX_BEACON[b].time_start,NULL,11);
-                        memset(AUX_BEACON[b].time_end,NULL,11);
+                        memset(AUX_BEACON[b].mac_bt,NULL,18);
+                        memset(AUX_BEACON[b].time_start,NULL,12);
+                        memset(AUX_BEACON[b].time_end,NULL,12);
 
                         //count_beacon--; /* Puesta por mi, reduce el conteo genera de los dispositivos dentro */
                     }

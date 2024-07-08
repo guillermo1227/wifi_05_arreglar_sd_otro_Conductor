@@ -29,6 +29,7 @@ wiced_bool_t _flag_aca=WICED_FALSE;
 wiced_bool_t _flag_driver = WICED_FALSE; /* Variable used to indicate the sound of driver */
 wiced_bool_t _wifi_status=WICED_FALSE;   /* Variable used to indicate the state of wifi */
 wiced_bool_t _machine_flag=WICED_FALSE;
+wiced_bool_t _machine_flag2=WICED_FALSE;
 wiced_bool_t _flag_D_in = WICED_FALSE;
 unsigned char _lateral_veh[2];
 unsigned char _lateral_lam[2];

@@ -389,7 +389,7 @@ int tcp_gateway( void ){
         wiced_tcp_stream_deinit(&stream);
         wiced_tcp_delete_socket(&socket);
 
-        if(_machine_flag == WICED_TRUE)
+        if(_machine_flag == WICED_TRUE || _machine_flag2 == WICED_TRUE)
         {
             printf("Voy a ver que mandaron*******************\n");
             return 1;
@@ -412,6 +412,7 @@ int tcp_client_aca( )
 {
     printf("\n*** Caso 1 de hvt ***\n");
     flag_time_set_PUBLISH=WICED_TRUE;
+    static uint8_t return_v1 = 0;                    /* variable to control interactions */
 
     uint8_t state=0;
 
@@ -531,8 +532,9 @@ int tcp_client_aca( )
 
           printf("Antes de caso HVT \n");
 
-          if(_machine_flag == WICED_FALSE)  /* Imprimo todo sin internet lo que hay en la memoria sd */
+          if(_machine_flag == WICED_FALSE && return_v1 < 2)  /* Imprimo todo sin internet lo que hay en la memoria sd */
           {
+              return_v1++;
               printf("Sin internet \n");
               coun=read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
               /* get the first token */
@@ -588,6 +590,7 @@ int tcp_client_aca( )
                   printf("%s\n",data_out);
               }
               wiced_rtos_delay_microseconds( 10 );
+              _machine_flag == WICED_FALSE;
           }
   //              memset(sendMessage,NULL,80);
                 memset(data_out,NULL,1000);
@@ -604,7 +607,7 @@ int tcp_client_aca( )
 
 
 // Fin de envio de acarreos
-
+          _machine_flag = WICED_FALSE;
 
 
 
@@ -658,6 +661,7 @@ int tcp_client_geo( )
 {
     printf("\n *** Caso 2 *** \n");
     uint8_t state=0;
+    static uint8_t return_v2 = 0;                    /* variable to control interactions */
 
 //    wiced_rtos_lock_mutex(&pubSubMutex);
 
@@ -771,8 +775,9 @@ int tcp_client_geo( )
              // Initialize the TCP stream
              wiced_tcp_stream_init(&stream, &socket);
 
-             if(_machine_flag == WICED_FALSE)
+             if(_machine_flag2 == WICED_FALSE && return_v2 < 2)
              {
+                 return_v2++,
                  coun=read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);
                  /* get the first token */
                  token = strtok(filebuf, s);
@@ -809,7 +814,7 @@ int tcp_client_geo( )
 
                  wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);
              }
-             else if(_machine_flag == WICED_TRUE)  /* Send online information */
+             else if(_machine_flag2 == WICED_TRUE)  /* Send online information */
              {
                  /* Aqui va la cadena HE */
                  count_tcp=0;
@@ -850,14 +855,8 @@ int tcp_client_geo( )
 
                  }
                  //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
-                 if(machineFlagControl == 0)
-                 {
-                     machineFlagControl = 1;
-                     _machine_flag = WICED_FALSE;   /* Variable to indicate the fill of the carry whit internet */
-                     printf("\n _machine_flag = WICED_TRUE \n");
-                     machineFlagControl = 0;
-                 }
-                        /* Variable to indicate the fill of the carry whit internet */
+
+                 _machine_flag2 == WICED_FALSE;   /* Variable to indicate the fill of the carry whit internet */
                  //wiced_rtos_set_semaphore(&StateMachineSemaphore);
              }
 
@@ -875,7 +874,7 @@ int tcp_client_geo( )
              wiced_tcp_stream_deinit(&stream);
              wiced_tcp_delete_socket(&socket);
 //    Fin de envio localizacion
-
+             _machine_flag2 = WICED_FALSE;
 
 //                key=2;
                 count_tcp++;
