@@ -187,9 +187,9 @@ void main_uart(wiced_thread_arg_t arg){
 //                    wiced_uart_transmit_bytes( WICED_UART_1, uart3, strlen(uart3));
 
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
-                    lcd_fallen_update(rx_buffer3,&lcd_fallen);      //Aqui si llega BNM y BEAC ---> _B_transit=WICED_TRUE; si fal==1 ---> fallen_f=WICED_TRUE;
+                    lcd_fallen_update(rx_buffer3,&lcd_fallen);      //Aqui si llega BNM y BEAC ---> Hombre caido o ago asi
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);       /* HE */
+                    data_file_write(rx_buffer3);       /* HE, aqui solo se lee GEOSF */
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
@@ -270,10 +270,10 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
                             }
                             else{                            /* Si esta la cadena */
                                 AUX_BEACON[b].flag=1;
-                                printf("si existe %d\n",b);
+                                //printf("si existe %d\n",b);
                                 if(strlen(AUX_BEACON[b].time_start)!=0){ /* Si ya tiene registro de entrada, se pone el registro de salida */
                                     strcpy(AUX_BEACON[b].time_end,time_get(&i2c_rtc));
-                                    printf("OK end Toma valor de salida \n");
+                                    //printf("OK end Toma valor de salida \n");
                                 }
                                 AUX_BEACON[b].flag=1;
                                 wirte1=WICED_TRUE;
@@ -290,8 +290,8 @@ void data_file_write(unsigned char* buffer_in ){      /* Funcion donde se llenan
                                         if(strlen(AUX_BEACON[i].time_start)<1)
                                         {
                                             strcpy(AUX_BEACON[i].time_start,time_get(&i2c_rtc));
-                                            printf("OK BEAC GEOSF\n");
-                                            printf("\n Variable para flujo de lo guardado de GEOSF %d\n",i);
+                                            //printf("OK BEAC GEOSF\n");
+                                            //printf("\n Variable para flujo de lo guardado de GEOSF %d\n",i);
                                             count_beacon=+1;
                                         }
                                         break;
@@ -356,7 +356,7 @@ void get_join_macbt(unsigned char* buffer_in){
                     break;
                     case 1:
 //                        strcpy(data_btt[s_count_x+1].type,cvl1);
-                        printf("\tMAC ABORDADAS 1\t %s longuitud %d \t\n",cvl1 ,strlen(cvl1));
+                        //printf("\tMAC ABORDADAS 1\t %s longuitud %d \t\n",cvl1 ,strlen(cvl1));
 //                       bt_joined.mac_lamp=cvl1;
 //                        char aux[strlen(cvl1)];
 //                        sprintf(aux,"%s",cvl1);
@@ -386,7 +386,7 @@ void collision_event_macbt(unsigned char* buffer_in){
     unsigned char str_temp[17];
 
     wiced_bool_t wirte_1=WICED_FALSE;
-    printf("%s\n",buffer_in);
+    //printf("%s\n",buffer_in);
 
     strncpy(str_switch,buffer_in,4);
     memcpy(str_split,buffer_in,strlen(buffer_in));
@@ -412,18 +412,18 @@ void collision_event_macbt(unsigned char* buffer_in){
 //                printf("%s\n",cvl1);
 //                strcpy( bt_joined.mac_tag,cvl1);
 /*--------------------------------------------------------------------------------*/
-                printf("cuentas %d\n",count_char(cvl1,':'));
+                //printf("cuentas %d\n",count_char(cvl1,':'));
                 if((strlen(cvl1)>=filter_size)&&(count_char(cvl1,':')==5)){
                         for(int x=1;x<buff_aux;x++){
                             if((strstr(aux_log_collision[x].mac_bt,cvl1))){
-                                printf("the collision continues: %s \n",cvl1);
+                                //printf("the collision continues: %s \n",cvl1);
                                 wirte_1=WICED_TRUE;
                                 aux_log_collision[x].flag=1;
                             }
                         }
                         if(wirte_1==WICED_FALSE){
                             wirte_1=WICED_TRUE;
-                            printf("Collison number %d\n",count_collision);
+                            //printf("Collison number %d\n",count_collision);
                             if(count_collision<buff_aux){
                                 memset(aux_log_collision[count_collision].mac_bt,NULL,18);
                                 strncpy(aux_log_collision[count_collision].mac_bt,cvl1,17);
@@ -450,7 +450,7 @@ void collision_event_macbt(unsigned char* buffer_in){
                 break;
             case 4:
 //                        stun mrcpy(data_btt[s_count_x+1].fallen,cvl1);
-                printf("%s\n",cvl1);
+                //printf("%s\n",cvl1);
 //                wiced_rtos_set_semaphore(&semaphoreHandle_C); /* Set the semaphore */
 
                 break;
@@ -516,7 +516,7 @@ void collision_event_beacon(unsigned char* buffer_in){
                 break;
             case 4:
 //                        stun mrcpy(data_btt[s_count_x+1].fallen,cvl1);
-                printf("%s\n",cvl1);
+                //printf("%s\n",cvl1);
 
                 break;
             default:

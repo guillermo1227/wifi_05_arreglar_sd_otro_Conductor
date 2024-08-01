@@ -164,7 +164,7 @@ void send_request_date()
 }
 
 int tcp_gateway( void ){
-    printf("\n *** Caso 3 *** \n");
+    //printf("\n *** Caso 3 *** \n");
     send_data_task=WICED_TRUE;
 
     int state=0;
@@ -391,7 +391,7 @@ int tcp_gateway( void ){
 
         if(_machine_flag == WICED_TRUE || _machine_flag2 == WICED_TRUE)
         {
-            printf("Voy a ver que mandaron*******************\n");
+            //printf("Voy a ver que mandaron*******************\n");
             return 1;
         }
         else if(return_v < 1)
@@ -410,7 +410,7 @@ int tcp_gateway( void ){
 
 int tcp_client_aca( )
 {
-    printf("\n*** Caso 1 de hvt ***\n");
+    //printf("\n*** Caso 1 de hvt ***\n");
     flag_time_set_PUBLISH=WICED_TRUE;
     static uint8_t return_v1 = 0;                    /* variable to control interactions */
 
@@ -545,11 +545,11 @@ int tcp_client_aca( )
                       wiced_rtos_delay_microseconds( 10 );
                       sprintf(data_out,"\nHVT;%s\r\n",token);
                       result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-                      printf("%s\n",data_out);
+                      //printf("%s\n",data_out);
                       if(result==WICED_TCPIP_SUCCESS){
               //                                    wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                           send_data_task=WICED_TRUE;
-                          printf( " >>>>>  %s\n", token );
+                          //printf( " >>>>>  %s\n", token );
                       }
                       token = strtok(NULL, s);
                       coun--;
@@ -570,7 +570,7 @@ int tcp_client_aca( )
           }
           else if(_machine_flag == WICED_TRUE)  /* Imprimo lo que tiene el line, nada de la memoria sd */
           {
-              printf("Con internet longitud de Cadena HVT %d \n",strlen(_HVT_Text));
+              //printf("Con internet longitud de Cadena HVT %d \n",strlen(_HVT_Text));
               count_tcp=0;
               /* Aqui pondre la cadena HVT */
               if((_wifi_status == WICED_TRUE) && strlen(_HVT_Text) != 0)
@@ -587,7 +587,7 @@ int tcp_client_aca( )
                       send_data_task=WICED_TRUE;
                   }
                   memset(_HVT_Text,NULL,150);
-                  printf("%s\n",data_out);
+                  //printf("%s\n",data_out);
               }
               wiced_rtos_delay_microseconds( 10 );
               _machine_flag == WICED_FALSE;
@@ -659,7 +659,7 @@ int tcp_client_aca( )
 
 int tcp_client_geo( )
 {
-    printf("\n *** Caso 2 *** \n");
+    //printf("\n *** Caso 2 *** \n");
     uint8_t state=0;
     static uint8_t return_v2 = 0;                    /* variable to control interactions */
 
@@ -789,7 +789,7 @@ int tcp_client_geo( )
                          wiced_rtos_delay_microseconds( 10 );
                          sprintf(data_out,"\nHE;%s\r\n",token);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
-                         printf("%s\n",data_out);
+                         //printf("%s\n",data_out);
                          if(result==WICED_TCPIP_SUCCESS){
                  //                                        wiced_uart_transmit_bytes(WICED_UART_1,(("%s",data_out)),strlen(data_out));
                              send_data_task=WICED_TRUE;
@@ -825,28 +825,28 @@ int tcp_client_geo( )
                      if((master_data2[b].flag == 1))
                      {
                          wiced_rtos_delay_microseconds( 10 );
-                         printf("Entra en :%d\n",b);
+                         //printf("Entra en :%d\n",b);
 
                          sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
                              send_data_task=WICED_TRUE;
-                             printf("Si %s\n",data_out);
+                             //printf("Si %s\n",data_out);
                          }
                          else
                          {
-                             printf("No mando nada\n");
+                             //printf("No mando nada\n");
                          }
 
                          sprintf(data_out,"\nHE;%s\r\n",master_data2[b].all_tex);
                          result=wiced_tcp_stream_write(&stream, data_out, strlen(data_out));
                          if(result==WICED_TCPIP_SUCCESS){
                              send_data_task=WICED_TRUE;
-                             printf("Si %s\n",data_out);
+                             //printf("Si %s\n",data_out);
                          }
                          else
                          {
-                             printf("No mando nada\n");
+                             //printf("No mando nada\n");
                          }
 
                          master_data2[b].flag=0;
@@ -879,7 +879,7 @@ int tcp_client_geo( )
 //                key=2;
                 count_tcp++;
 
-                printf("Se va ha %d\n",count_tcp);
+                //printf("Se va ha %d\n",count_tcp);
                 if(count_tcp==TCP_NUMBER){
                     state=3;
                     count_tcp=0;

@@ -63,6 +63,8 @@ static wiced_thread_t displayThreadHandle;
 static wiced_thread_t publishThreadHandle;
 static wiced_thread_t subscribeThreadHandle;
 
+static wiced_thread_t giroscopioThreadHandle;  /* manejadro de mi hilocon un gisroscopio */
+
 static wiced_thread_t commandThreadHandle;
 
 struct colliosn_mac_t bt_joined;
@@ -104,6 +106,7 @@ wiced_mac_t MacW;
 #include "TIMER/manager_timer_vh.h"
 #include "NET/wireless_config.h"
 #include "NET/manager_net.h"
+#include "RTC/smi2c.h"
 
 
 void application_start( ){
@@ -140,9 +143,10 @@ void application_start( ){
 //    wwd_wifi_set_mcs_rate (WICED_STA_INTERFACE, 0, WICED_TRUE);
 
     Init_gpio();
-    init_rtc(&i2c_rtc);
+    //init_rtc(&i2c_rtc);  /* Inicializo protocolo I2C */
     init_sd(&fs_handle);
     uart_int();
+    init_rtc(&i2c_rtc);  /* Inicializo protocolo I2C para obtener tiempo y valor del giroscopio y acelerometro */
     init_all_timer();
 
 
@@ -150,7 +154,10 @@ void application_start( ){
 //    date_set("20/12/25",&i2c_rtc);
 //     time_set("11:80:00",&i2c_rtc);
 
+    //wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
     wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
+
+    //wiced_rtos_create_thread(&giroscopioThreadHandle, THREAD_BASE_PRIORITY+5, NULL, girsocopeThread, THREAD_STACK_SIZE, NULL);    /* Hilo para giroscopio */
 
     wiced_wifi_get_mac_address(&MacW);                             // Se obtiene la MAC del dispositivo
 
@@ -249,7 +256,7 @@ void application_start( ){
 //    buzz(10,0);
 //    buzz(150,0);
             main_c=is_config();
-            printf("\n Esto vale el is_config %d\n",main_c);
+            //printf("\n Esto vale el is_config %d\n",main_c);
 
 
 

@@ -24,6 +24,7 @@ t* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 #include "stdlib.h"
 
 #include "GPIO/manager_gpio_vh.h"
+//#include "IMU/i2c_lsm6dsm.h"
 
 void Time_reboot(void* arg);
 #define TIMER_TIME (1000)
@@ -79,7 +80,7 @@ void timer_lcd(void* arg);
 void init_all_timer(){
 /*  Initialize timer*/
     WPRINT_APP_INFO( ("Initialize timer\n") );
-    printf("\n Inicio de timers \n");
+    //printf("\n Inicio de timers \n");
 //    wiced_rtos_init_timer(&timer_Handle_reset_lcd, 60*TIMER_TIME, timer_lcd, NULL);
 
     wiced_rtos_init_timer(&timerHandle_reset, TIMER_TIME, Time_reboot, NULL);
@@ -152,7 +153,7 @@ static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
             strcpy(log_accarreos.id,id_count);
             log_accarreos.id[strlen(id_count)]='\0';
 
-            printf("%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
+            //printf("%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
             memset(filebuf,NULL,LOCAL_BUFFER_SIZE);
 
             if(atoi(id_count)<=limit_save_file){
@@ -171,14 +172,14 @@ static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
          GEOSF_F=WICED_FALSE;
 
          buzz(200,0);
-         printf("prendio");
+         //printf("prendio");
      }
     else if((Product_f==WICED_FALSE)&&(GEOSF_F==WICED_FALSE)){
         Product_f=WICED_TRUE;
-        printf("no prendio nada\n");
+        //printf("no prendio nada\n");
 
     }
-    printf("\t%d\t%d\n",Product_f,GEOSF_F);
+    //printf("\t%d\t%d\n",Product_f,GEOSF_F);
     GEOSF_F=WICED_FALSE;
 
 
@@ -226,7 +227,7 @@ static wiced_result_t Collision_V( void ){
                        memset(bt_joined.mac_beacon,NULL,40);
                    }
 
-                   printf("Index : %d",count_collision);
+                   //printf("Index : %d",count_collision);
 //
 //                   printf("%s",filebuf);
 //                   wiced_rtos_delay_milliseconds(10);
@@ -253,7 +254,7 @@ static wiced_result_t Collision_V( void ){
 
 static wiced_result_t Beacon_V( void ){      /* Datos de HE; */
 
-    printf("Timer HE %d Total de beacons adentro %d\n",count_save,count_beacon);
+    //printf("Timer HE %d Total de beacons adentro %d\n",count_save,count_beacon);
 static uint8_t h=0;
 if(h < 1)
 {
@@ -274,7 +275,7 @@ if(h < 1)
     else if(count_save==TIME_LOC){
             if(_wifi_status == WICED_TRUE)
             {
-            printf("Entro en HE\n");
+            //printf("Entro en HE\n");
             uint8_t b=1;  /* Uso el cont porque son mas variables y pueden irce diferentes variables */
             while(b <buff_aux)
             {
@@ -289,7 +290,7 @@ if(h < 1)
                         strcpy(data_alone.id,"700");    /* The value of 700 is a number that express online value */
 
                         strcpy(master_data2[b].all_tex,data_to_json(&data_alone));
-                        printf("**** Texto compiado %s\n",master_data2[b].all_tex);
+                        //printf("**** Texto compiado %s\n",master_data2[b].all_tex);
                         master_data2[b].flag=1;
 
 
@@ -302,7 +303,7 @@ if(h < 1)
                         //wiced_rtos_get_semaphore(&StateMachineSemaphore,WICED_WAIT_FOREVER);
 
                         _machine_flag2 = WICED_TRUE;       /* Variable to indicate the fill of the carry whit internet */
-                        printf("\n _machine_flag2 = WICED_TRUE \n");
+                        //printf("\n _machine_flag2 = WICED_TRUE \n");
 
                         //wiced_rtos_set_semaphore(&StateMachineSemaphore);
                     reg_incoming=WICED_FALSE;
@@ -321,7 +322,7 @@ if(h < 1)
         }
         else if(_wifi_status == WICED_FALSE)
         {
-            printf("Opcion sin conexion \n");
+            //printf("Opcion sin conexion \n");
             for(int b=1;b<buff_aux;b++){
                 if((strlen(AUX_BEACON[b].mac_bt)!=0)&&(AUX_BEACON[b].flag==0)&&(strlen(AUX_BEACON[b].time_end)!=0)){
                     wiced_filesystem_unmount(&fs_handle);
@@ -349,7 +350,7 @@ if(h < 1)
                         //count_beacon--; /* Puesta por mi, reduce el conteo genera de los dispositivos dentro */
                     }
                     else{
-                        printf("Excedio el limite %d\n",atoi(id_count));
+                        //printf("Excedio el limite %d\n",atoi(id_count));
                     }
             //                printf("%s",filebuf);
                     reg_incoming=WICED_FALSE;
@@ -369,13 +370,12 @@ if(h < 1)
 
 void timer_lcd(void* arg){
     flag_lcd_timer=WICED_TRUE;
-    printf("TIMER LCD DOS SEGUNDOS\n");
+    //printf("TIMER LCD DOS SEGUNDOS\n");
     //wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
 
 }
 
 static wiced_result_t guardian_v( void ){
-
 //    WPRINT_APP_INFO( ("LAMPARA Last count %d  actual count %d \r\n",last_count_l,count_l) );
 //    WPRINT_APP_INFO( ("VEHICULO Last count %d  actual count %d \r\n",last_count_v,count_v) );
 
@@ -419,7 +419,7 @@ static wiced_result_t guardian_v( void ){
 //    WPRINT_APP_INFO( ("FRIST VEHC %d \r\n",first_seen_vh) );
 //
 
-
+//imu_read();
 
     }
 
@@ -449,7 +449,7 @@ static wiced_result_t guardian_V2( void ){
 
     if(_flag_driver == WICED_TRUE)
             {
-            printf("\n *** Sound driver *** \n");
+            //printf("\n *** Sound driver *** \n");
             buzz(200,2);
             _flag_driver = WICED_FALSE;
             }

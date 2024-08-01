@@ -2,7 +2,9 @@
 #include <malloc.h>
 #include "wiced.h"
 
-
+#include "IMU/i2c_lsm6dsm.h"
+#include  "UART/manager_menssage.h"
+//#include "GPIO/manager_gpio.h"
 
 #define RTC_DEVICE_ADDR        (0x68)
 #define RTC_WOAMI_REG         (0x00)//(0x02 | 0x80)
@@ -37,15 +39,22 @@ void init_rtc(wiced_i2c_device_t * i2c_device_rtc){
        if ( wiced_i2c_init( i2c_device_rtc ) != WICED_SUCCESS )
        {
            WPRINT_APP_INFO( ( "I2C Initialization Failed\n" ) );
-
+           wiced_uart_transmit_bytes(WICED_UART_1,"I2C Initialization Failed\n",strlen("I2C Initialization Failed\n"));
+       }
+       else
+       {
+           wiced_uart_transmit_bytes(WICED_UART_1,"I2C succes RTC\n",strlen("I2C succes RTC\n"));
        }
 
-       /* Estaba descomentado, pero comente porque no hace nada */
-//       /* Probe I2C bus for temperature sensor */
-//       if( wiced_i2c_probe_device( i2c_device_rtc, NUM_I2C_MESSAGE_RETRIES ) != WICED_TRUE )
-//       {
-//
-//       }
+       /* Probe I2C bus for temperature sensor */
+       if( wiced_i2c_probe_device( i2c_device_rtc, NUM_I2C_MESSAGE_RETRIES ) != WICED_TRUE )
+       {
+           wiced_uart_transmit_bytes(WICED_UART_1,"I2C probe Failed\n",strlen("I2C probe Failed\n"));
+       }
+       else
+       {
+           wiced_uart_transmit_bytes(WICED_UART_1,"I2C probe Succes\n",strlen("I2C probe Succes\n"));
+       }
 
 }
 
