@@ -107,7 +107,7 @@ void displayThread(wiced_thread_arg_t arg)
     char intro[25];
     char lamp[2];
     char veh[2];
-    static uint8_t send_lsm6dsm=0;
+    //static uint8_t send_lsm6dsm=0;
 
     int_lcd();
     imu_init();  /* Init sensor lsm6dsm */
@@ -125,12 +125,20 @@ void displayThread(wiced_thread_arg_t arg)
 
     while(1)
     {
-        /* Wait until new data is ready to display */
-        //wiced_rtos_lock_mutex( &i2cMutex); /* Agregado por mi */
+//        if(state_machine == 0)
+//        {
+//            wiced_rtos_lock_mutex( &i2cMutex); /* Agregado por mi */
+//        }
+//        else if(state_machine == 1)
+//        {
+//            wiced_rtos_unlock_mutex(&i2cMutex);
+//        }
 
-        wiced_uart_transmit_bytes(WICED_UART_1,"Tomo hilo LCD\n",strlen("Tomo hilo LCD\n"));
         wiced_rtos_get_semaphore(&displaySemaphore, WICED_WAIT_FOREVER);          /* En Pop Queue otra parte del codigo tiene que haberse llenado */
         wiced_rtos_pop_from_queue(&pubQueue, &queue_str, WICED_WAIT_FOREVER);     /* el mensaje para que tenga informacion y entre, si no esprara */
+
+        wiced_uart_transmit_bytes(WICED_UART_1,"Tomo hilo LCD\n",strlen("Tomo hilo LCD\n"));
+
 //        WPRINT_APP_INFO(("informacion reviuda del queue =%s & %d \n",queue_str,count_l));
 //        sprintf(queue_str,"%s",queue_str);
 
@@ -173,7 +181,7 @@ void displayThread(wiced_thread_arg_t arg)
 
         /* Send data to the display */
         u8g_FirstPage(&display);
-        wiced_rtos_lock_mutex(&i2cMutex);
+        wiced_rtos_lock_mutex(&i2cMutex);   /* --------------------> */
         do {
             coun_lcd=coun_lcd+1;
             refresh_oled=refresh_oled+1;
@@ -237,15 +245,15 @@ void displayThread(wiced_thread_arg_t arg)
 
         } while (u8g_NextPage(&display));
 
-        if(send_lsm6dsm >=10)
-        {
-            imu_read();
-            send_lsm6dsm = 0;
-        }
-        else
-        {
-            send_lsm6dsm++;
-        }
+//        if(send_lsm6dsm >=10)
+//        {
+//            imu_read();
+//            send_lsm6dsm = 0;
+//        }
+//        else
+//        {
+//            send_lsm6dsm++;
+//        }
         wiced_rtos_unlock_mutex(&i2cMutex);
     }
 }

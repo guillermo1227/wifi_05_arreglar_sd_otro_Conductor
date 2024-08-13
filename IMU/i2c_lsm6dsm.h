@@ -209,14 +209,14 @@ void imu_init(){
     } else{ wiced_uart_transmit_bytes(WICED_UART_1, WAI_EXITO, sizeof(WAI_EXITO)-1); }
 
     //  POWER-UP THE DEVICE / ENABLE ALL SENSOR'S
-    //  POWER-UP ACCELEROMETER
+    //  POWER-UP ACCELEROMETER                  Configure Linear acceleration sensor control register 1 (r/w)
     tx_buffer[0]= CTRL1_XL;
     tx_buffer[1]= ( CTRL1_ODR_XL_100 | CTRL1_FS_XL_2G | CTRL1_LPF1_BW_SEL_XL | CTRL1_BW0_XL );
     wiced_i2c_write( &i2c_device_lsm6dsm, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &tx_buffer, 2);
     wiced_i2c_write( &i2c_device_lsm6dsm, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &tx_buffer[0], 1);
     wiced_i2c_read( &i2c_device_lsm6dsm, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &rx_buffer1, sizeof(rx_buffer1));
 
-    //  POWER-UP GYROSCOPE
+    //  POWER-UP GYROSCOPE                      Configure Angular rate sensor control register 2 (r/w).
     tx_buffer[0]= CTRL2_G;
     tx_buffer[1]= ( CTRL2_ODR_G_100 | CTRL2_FS_G_250 | CTRL2_FS_125 );
     wiced_i2c_write( &i2c_device_lsm6dsm, WICED_I2C_START_FLAG | WICED_I2C_STOP_FLAG, &tx_buffer, 2 );
@@ -401,7 +401,7 @@ wiced_result_t imu_read(){
         /* Esto estaba comentado */
         printf("Informacion de giroscopio *********** \n");
         char texto[50];
-        sprintf(texto,"Gx: %5.2f Gy: %5.2f --> Gx: %5.2f\t Gy: %5.2f ",imu.gx, imu.gy,get_gxdata, get_gydata);
+        sprintf(texto,"Gx: %5.2f Gy: %5.2f --> Gx: %5.2f\t Gy: %5.2f \n",imu.gx, imu.gy,get_gxdata, get_gydata);
         WPRINT_APP_INFO(("Ax: %5.2f\t Ay: %5.2f\t Az: %5.2f\t", imu.ax, imu.ay, imu.az));
         WPRINT_APP_INFO(("Gx: %d\t Gy: %d\n\n\n\n", accgx, accgy));
         WPRINT_APP_INFO(("Gx: %d\t Gy: %d\n\n", gget_x[0], gget_z[0]));

@@ -24,6 +24,7 @@ t* Copyright (C) 2018-2021 LASECÂ®ï¸� Telecomunicaciones S.A.P.I. de C.V.
 #include "stdlib.h"
 
 #include "GPIO/manager_gpio_vh.h"
+#include  "UART/manager_menssage.h"
 //#include "IMU/i2c_lsm6dsm.h"
 
 void Time_reboot(void* arg);
@@ -49,6 +50,8 @@ static wiced_timed_event_t Geo_guardian;
 static wiced_timed_event_t Collision_guardian;
 static wiced_timed_event_t Pantalla_guardian;   /* Watchdog */
 
+static wiced_timed_event_t GiroscopioAcelerometro_giardian;
+
 static wiced_result_t guardian_v( void );
 static wiced_result_t guardian_V2( void );
 
@@ -60,12 +63,14 @@ uint8_t last_count_v=1;
 wiced_bool_t first_seen_vh=WICED_TRUE;
 wiced_bool_t first_seen_lm=WICED_TRUE;
 wiced_bool_t first_seen_both=WICED_FALSE;
+wiced_bool_t ResultGirAce = WICED_FALSE;
 
 uint8_t rz_c=1;
 void publish30sec(void* arg);
 static wiced_result_t Beacon_V( void );
 static wiced_result_t Collision_V( void );
 static wiced_result_t Acarreo_V( void );
+static wiced_result_t InstrumentacionA_V( void );
 
 static wiced_result_t Pantalla_T( void );   /* Watchdog */
 void start_whatchdog_LCD(void);      /* Watchdog */
@@ -101,6 +106,7 @@ void init_all_timer(){
 
 //        wiced_rtos_register_timed_event( &sound_dog, THREAD_BASE_PRIORITY+2, &commandThread, 3000, 0 );
 
+        wiced_rtos_register_timed_event( &GiroscopioAcelerometro_giardian, WICED_NETWORKING_WORKER_THREAD, &InstrumentacionA_V, 2000, 0 );   /* Valores de giroscopio */
 }
 
 start_whatchdog_LCD(void)   /* Watchdog */
@@ -536,6 +542,22 @@ void Time_reboot(void* arg){
 static wiced_result_t Pantalla_T( void )
 {
     screen_checker();
+}
+
+/* Send the information about girsocopio and  */
+static wiced_result_t InstrumentacionA_V( void )
+{
+
+    state_machine = 1;
+    //wiced_rtos_lock_mutex( &i2cMutex); /* Agregado por mi */
+    wiced_rtos_get_semaphore(&displaySemaphore,100);          /* En Pop Queue otra parte del codigo tiene que haberse llenado */
+    wiced_uart_transmit_bytes(WICED_UART_1,"Tomo timer\n", strlen("Tomo timer\n"));
+
+    imu_read();
+    state_machine = 0;
+    wiced_rtos_set_semaphore(&displaySemaphore);
+    //wiced_rtos_unlock_mutex(&i2cMutex);
+
 }
 
 #endif  /* stdbool.h */

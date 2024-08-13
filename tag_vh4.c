@@ -71,6 +71,8 @@ struct colliosn_mac_t bt_joined;
 wiced_bool_t sent_file_flag=WICED_FALSE;
 
 uint8_t main_c=0;
+uint8_t state_machine = 0;
+
 wiced_i2c_device_t i2c_rtc;
 wiced_result_t  flag_time_set=WICED_TRUE;
 wiced_result_t  flag_time_set_PUBLISH=WICED_FALSE;
@@ -146,7 +148,7 @@ void application_start( ){
     //init_rtc(&i2c_rtc);  /* Inicializo protocolo I2C */
     init_sd(&fs_handle);
     uart_int();
-    init_rtc(&i2c_rtc);  /* Inicializo protocolo I2C para obtener tiempo y valor del giroscopio y acelerometro */
+    init_rtc(&i2c_rtc);  /* Inicializo protocolo I2C RTC */
     init_all_timer();
 
 
@@ -154,7 +156,6 @@ void application_start( ){
 //    date_set("20/12/25",&i2c_rtc);
 //     time_set("11:80:00",&i2c_rtc);
 
-    //wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
     wiced_rtos_create_thread(&displayThreadHandle, THREAD_BASE_PRIORITY+4, NULL, displayThread, THREAD_STACK_SIZE, NULL);
 
     //wiced_rtos_create_thread(&giroscopioThreadHandle, THREAD_BASE_PRIORITY+5, NULL, girsocopeThread, THREAD_STACK_SIZE, NULL);    /* Hilo para giroscopio */
