@@ -73,8 +73,6 @@ extern void screen_checker(void);           /* Watchdog */
 void collision_event_log(wiced_thread_arg_t arg);
 void SearchWifi(wiced_thread_arg_t arg);
 
-void timer_lcd(void* arg);
-
 
 void init_all_timer(){
 /*  Initialize timer*/
@@ -162,6 +160,7 @@ static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
                 memset(log_accarreos.name,NULL,18);
                 memset(log_accarreos.id,NULL,3);
                 memset(log_accarreos.time_start,NULL,12);
+
             }
         }
     }
@@ -367,12 +366,6 @@ if(h < 1)
 
 }
 
-void timer_lcd(void* arg){
-    flag_lcd_timer=WICED_TRUE;
-    printf("TIMER LCD DOS SEGUNDOS\n");
-    //wiced_rtos_set_semaphore(&tcpGatewaySemaphore);
-
-}
 
 static wiced_result_t guardian_v( void ){
 
@@ -507,17 +500,17 @@ void Time_reboot(void* arg){
          c_silent=c_silent+1;
          if((c_silent==2)&&(silent==WICED_FALSE)){
              _sound_flag=WICED_TRUE;
-             silent=WICED_TRUE;
-             frist_seen_silent=WICED_TRUE;
+             silent=WICED_TRUE;         /* ----->Este si activa el hilo de pantalla */
+             frist_seen_silent=WICED_TRUE; /* ----->Este tambien activa hilo de pantalla */
              wiced_rtos_set_semaphore(&displaySemaphore);
-
+             printf("Doy acceso desde timer reboot 1\n");
          }
          else if((c_silent==2)&&(silent==WICED_TRUE)){
-             silent=WICED_FALSE;
-             frist_seen_silent=WICED_TRUE;
+             silent=WICED_FALSE;        /* ----->Este si activa el hilo de pantalla */
+             frist_seen_silent=WICED_TRUE;  /* ----->Este tambien activa hilo de pantalla */
              _sound_flag=WICED_TRUE;
              wiced_rtos_set_semaphore(&displaySemaphore);
-
+             printf("Doy acceso desde timer reboot 2\n");
          }
      }
      else{

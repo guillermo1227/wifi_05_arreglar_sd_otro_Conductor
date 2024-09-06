@@ -550,7 +550,8 @@ void data_bt_send(unsigned char* buffer_in ){
             }
     }
 
-    wiced_rtos_set_semaphore(&displaySemaphore);
+    printf("Doy acceso a semaforo desde UART\n");
+    wiced_rtos_set_semaphore(&displaySemaphore);  /* Porque esta esto aqui? */
 
 }
 

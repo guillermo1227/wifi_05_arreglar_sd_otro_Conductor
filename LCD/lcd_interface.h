@@ -28,15 +28,12 @@
 
 #define fallen "FALLEN"
 #define C_OLED (30)
-wiced_bool_t flag_lcd_timer=WICED_FALSE;
 
 #define MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES (7000*MILLISECONDS)                                                       /* Watchdog */
 #define EXPECTED_WORK_TIME                               (MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES - (100*MILLISECONDS))    /* Watchdog */
 #define UNEXPECTED_DELAY                                 (200*MILLISECONDS)
 
 int coun_lcd=1;
-int refresh_oled=1;
-char LCD_state[14] ={0}; /* Watchdog */
 
 void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,char* c_v,wiced_bool_t flag);
 void displayThread(wiced_thread_arg_t arg);
@@ -48,9 +45,17 @@ wiced_bool_t evacution_t =WICED_FALSE;
 
 uint8_t oled_things=1;
 
-wiced_bool_t First_one=WICED_FALSE;
+wiced_bool_t First_one = WICED_FALSE;
+wiced_bool_t take_por_giroscopy = WICED_FALSE;  /* Alternar giroscopio y pantalla LCD */
 
+enum control_port {
+    No_carry,
+    transmit_carry,
+    end_transmit_carry,
+    leav_carry
+};
 
+uint8_t proccess_port = 0;
 
 #define _BACK       "B"
 #define _FRONT      "F"
@@ -75,24 +80,7 @@ void int_lcd(){
     u8g_SetFont(&display, u8g_font_gdr10);
     u8g_SetFontPosTop(&display);
 
-//    /* Registro de monitoreo*/
-//    wiced_register_system_monitor( &my_thread_monitor, MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES ); /* Monitoring the LCD screen */
-//
-//            if(wiced_i2c_probe_device(&display_i2c, 5) == WICED_TRUE)
-//            {
-//                //wiced_uart_transmit_bytes(WICED_UART_1,"LCD startup successful", strlen("LCD startup successful"));
-//                memcpy(LCD_state,LCD_Success,strlen(LCD_Success));
-//                printf("\n LCD init sucess \n");
-//            }
-//            else
-//            {
-//                //wiced_uart_transmit_bytes(WICED_UART_1,"No LCD successful", strlen("No LCD successful"));
-//                memcpy(LCD_state,LCD_Unsuccess,strlen(LCD_Unsuccess));
-//                printf("\n LCD init No sucess \n");
-//            }
-//            /* Actualizacion del monitoreo */
-//            wiced_update_system_monitor( &my_thread_monitor, MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES );
-//            start_whatchdog_LCD();
+            start_whatchdog_LCD();  /* Inicializa timer para controlar pantalla y girsocopio */
 }
 
 
@@ -125,6 +113,10 @@ void displayThread(wiced_thread_arg_t arg)
         /* Wait until new data is ready to display */
         wiced_rtos_get_semaphore(&displaySemaphore, WICED_WAIT_FOREVER);
         wiced_rtos_pop_from_queue(&pubQueue, &queue_str, WICED_WAIT_FOREVER);
+       printf("Dieron acceso al semaphoro \n");
+
+       if(proccess_port != on_carry)
+       {
 //        WPRINT_APP_INFO(("informacion reviuda del queue =%s & %d \n",queue_str,count_l));
 //        sprintf(queue_str,"%s",queue_str);
 
@@ -170,7 +162,6 @@ void displayThread(wiced_thread_arg_t arg)
         wiced_rtos_lock_mutex(&i2cMutex);
         do {
             coun_lcd=coun_lcd+1;
-            refresh_oled=refresh_oled+1;
 
 //            Set_Warning(&display,coun_lcd,"  ",&lamp,&veh,WICED_FALSE);
             if(frist_seen_silent==WICED_TRUE){
@@ -221,19 +212,13 @@ void displayThread(wiced_thread_arg_t arg)
                   First_one=WICED_TRUE;
                }
 
-            if((refresh_oled==100)||(flag_lcd_timer==WICED_TRUE)){
-                refresh_oled=0;
-//                int_lcd();
-                flag_lcd_timer=WICED_FALSE;
-
-            }
-
-
         } while (u8g_NextPage(&display));
 
 
         wiced_rtos_unlock_mutex(&i2cMutex);
-    }
+
+       }    /* Fin de pregunta de carga */
+    }       /* Fin de cilco while */
 }
 #define a 2
 void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,char* c_v,uint8_t flag){
@@ -394,31 +379,24 @@ void lcd_draw_count(u8g_t* u8g,uint8_t tc_v,uint8_t tc_l, const u8g_fntpgm_uint8
 
 void screen_checker()
 {
-    static uint8_t counter_lcd=0;
-//    if(wiced_update_system_monitor( &my_thread_monitor, MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES ) == WICED_SUCCESS)
-//    {
-//        printf("\n Receteo del watchdog \n");
-//    }
+    static uint8_t simulator = 0;
+    if(simulator == 5)
+    {
+        proccess_port = transmit_carry;
+        wiced_rtos_set_semaphore(&displaySemaphore);  /* Liberar hilo de pantalla */
+        wiced_rtos_delay_milliseconds(100);           /* Tiempo para que actualice el valor y no se mescle el puerto */
 
-//    if(wiced_i2c_probe_device(&display_i2c, 5) == WICED_TRUE)
-//    {
-//        wiced_update_system_monitor( &my_thread_monitor, MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES );
-//        printf("\n LCD continue sucesful \n");
-//        //wiced_uart_transmit_bytes(WICED_UART_1,"LCD continue successful\n", strlen("LCD continue successful\n"));
-//        sprintf(LCD_state,"%s",LCD_Success);
-//        counter_lcd=0;
-//    }
-//    else if(counter_lcd <= 3)
-//    {
-//        if(wiced_update_system_monitor( &my_thread_monitor, MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES )== WICED_SUCCESS)
-//        {
-//            printf("\n LCD continue No sucesful \n");
-//        }
-//        //wiced_uart_transmit_bytes(WICED_UART_1,"LCD no continue successful\n", strlen("LCD no continue successful\n"));
-//        sprintf(LCD_state,"%s",LCD_Unsuccess);
-//        counter_lcd++;   /* Se visualizara el mensaje de LCD no conetada por 2 ciclos, despues se reiniciara */
-//    }
-//    wiced_update_system_monitor( &my_thread_monitor, MAXIMUM_ALLOWED_INTERVAL_BETWEEN_MONITOR_UPDATES );
+        /* Ejecucion de codigo de ibraim */
+        /* Voy a declarar una variable para decirle al hilo de la pantalla que ya voy a alternar entre el hilo y la deteccion de datos */
+        /* Restart */
+        proccess_port = end_transmit_carry;
+        wiced_rtos_set_semaphore(&displaySemaphore);    /* Vuelvo a llamar hilo de pantalla para que actualice los valores pendientes */
+    }
+    else
+    {
+        simulator++;
+    }
+
 }
 
 #endif  /* stdbool.h */
