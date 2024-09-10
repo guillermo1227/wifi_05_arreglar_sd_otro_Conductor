@@ -107,10 +107,10 @@ void displayThread(wiced_thread_arg_t arg)
     char intro[25];
     char lamp[2];
     char veh[2];
-    static uint8_t send_lsm6dsm=0;
+    //static uint8_t send_lsm6dsm=0;
 
     int_lcd();
-    imu_init();  /* Init sensor lsm6dsm */
+    //imu_init();  /* Init sensor lsm6dsm */
 
     sprintf(intro,"SMART FLOW");
     sprintf(eva,"RISK ZONE");
@@ -237,15 +237,15 @@ void displayThread(wiced_thread_arg_t arg)
 
         } while (u8g_NextPage(&display));
 
-        if(send_lsm6dsm >=10)
-        {
-            imu_read();
-            send_lsm6dsm = 0;
-        }
-        else
-        {
-            send_lsm6dsm++;
-        }
+//        if(send_lsm6dsm >=10)
+//        {
+//            imu_read();
+//            send_lsm6dsm = 0;
+//        }
+//        else
+//        {
+//            send_lsm6dsm++;
+//        }
         wiced_rtos_unlock_mutex(&i2cMutex);
     }
 }

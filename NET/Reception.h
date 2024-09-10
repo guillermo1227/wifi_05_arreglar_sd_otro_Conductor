@@ -391,7 +391,6 @@ int tcp_gateway( void ){
 
         if(_machine_flag == WICED_TRUE || _machine_flag2 == WICED_TRUE)
         {
-            //printf("Voy a ver que mandaron*******************\n");
             return 1;
         }
         else if(return_v < 1)
