@@ -389,7 +389,7 @@ int tcp_gateway( void ){
         wiced_tcp_stream_deinit(&stream);
         wiced_tcp_delete_socket(&socket);
 
-        if(_machine_flag == WICED_TRUE || _machine_flag2 == WICED_TRUE)
+        if(_machine_flag == WICED_TRUE || _machine_flag2 == WICED_TRUE) /* _machine_flag indica que hay un nuevo dato de acarreos con internet */
         {
             printf("Voy a ver que mandaron*******************\n");
             return 1;
@@ -532,7 +532,8 @@ int tcp_client_aca( )
 
           printf("Antes de caso HVT \n");
 
-          if(_machine_flag == WICED_FALSE && return_v1 < 2)  /* Imprimo todo sin internet lo que hay en la memoria sd */
+          //if(_machine_flag == WICED_FALSE && return_v1 < 2)  /* Imprimo todo lo que hay en la memoria sd, _machine_flag = WICED_TRUE nuevo valor online que mandar */
+          if(return_v1 < 2)
           {
               return_v1++;
               printf("Sin internet \n");
@@ -568,7 +569,7 @@ int tcp_client_aca( )
 
               wiced_rtos_get_semaphore(&tcpGatewaySemaphore,WICED_WAIT_FOREVER);
           }
-          else if(_machine_flag == WICED_TRUE)  /* Imprimo lo que tiene el line, nada de la memoria sd */
+          else if(_machine_flag == WICED_TRUE)  /* Imprimo lo que tiene el online, nada de la memoria sd */
           {
               printf("Con internet longitud de Cadena HVT %d \n",strlen(_HVT_Text));
               count_tcp=0;
@@ -775,7 +776,8 @@ int tcp_client_geo( )
              // Initialize the TCP stream
              wiced_tcp_stream_init(&stream, &socket);
 
-             if(_machine_flag2 == WICED_FALSE && return_v2 < 2)
+             //if(_machine_flag2 == WICED_FALSE && return_v2 < 2)
+             if(return_v2 < 2)
              {
                  return_v2++,
                  coun=read_data(SF_ROOT,date_get(&i2c_rtc),&fs_handle);

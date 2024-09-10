@@ -26,6 +26,7 @@ wiced_bool_t _B_transit=WICED_FALSE;
 wiced_bool_t fallen_f =WICED_FALSE;
 wiced_bool_t risk_z=WICED_FALSE;
 wiced_bool_t _flag_aca=WICED_FALSE;
+
 wiced_bool_t _flag_driver = WICED_FALSE; /* Variable used to indicate the sound of driver */
 wiced_bool_t _wifi_status=WICED_FALSE;   /* Variable used to indicate the state of wifi */
 wiced_bool_t _machine_flag=WICED_FALSE;

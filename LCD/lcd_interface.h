@@ -80,7 +80,8 @@ void int_lcd(){
     u8g_SetFont(&display, u8g_font_gdr10);
     u8g_SetFontPosTop(&display);
 
-            start_whatchdog_LCD();  /* Inicializa timer para controlar pantalla y girsocopio */
+
+            //start_whatchdog_LCD();  /* Inicializa timer para controlar pantalla y girsocopio */
 }
 
 
@@ -115,7 +116,7 @@ void displayThread(wiced_thread_arg_t arg)
         wiced_rtos_pop_from_queue(&pubQueue, &queue_str, WICED_WAIT_FOREVER);
        printf("Dieron acceso al semaphoro \n");
 
-       if(proccess_port != on_carry)
+       if(proccess_port != transmit_carry)
        {
 //        WPRINT_APP_INFO(("informacion reviuda del queue =%s & %d \n",queue_str,count_l));
 //        sprintf(queue_str,"%s",queue_str);
@@ -379,6 +380,8 @@ void lcd_draw_count(u8g_t* u8g,uint8_t tc_v,uint8_t tc_l, const u8g_fntpgm_uint8
 
 void screen_checker()
 {
+
+    log_accarreos.mac_bt;
     static uint8_t simulator = 0;
     if(simulator == 5)
     {

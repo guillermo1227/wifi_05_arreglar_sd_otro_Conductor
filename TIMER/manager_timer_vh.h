@@ -90,7 +90,7 @@ void init_all_timer(){
         wiced_rtos_register_timed_event( &guardian, WICED_NETWORKING_WORKER_THREAD, &guardian_v, 1200, 0 );
         wiced_rtos_register_timed_event( &guardian2, WICED_NETWORKING_WORKER_THREAD, &guardian_V2, 1000, 0 );
         wiced_rtos_register_timed_event( &Geo_guardian, WICED_NETWORKING_WORKER_THREAD, &Beacon_V, 2100, 0 );       /* HE; */
-        wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 4500, 0 );   /* HVT */
+        wiced_rtos_register_timed_event( &Beacon_guardian, WICED_NETWORKING_WORKER_THREAD, &Acarreo_V, 1000, 0 );   /* HVT  4500*/
 
 //        wiced_rtos_create_thread(&ThreadHandle_W, THREAD_BASE_PRIORITY+5, "WIFI", SearchWifi, THREAD_STACK_SIZE, NULL);
 
@@ -100,11 +100,11 @@ void init_all_timer(){
 
 }
 
-start_whatchdog_LCD(void)   /* Watchdog */
-{
-    //wiced_uart_transmit_bytes(WICED_UART_1,"Init timer\n", strlen("Init timer\n"));
-    wiced_rtos_register_timed_event( &Pantalla_guardian, WICED_NETWORKING_WORKER_THREAD, &Pantalla_T,4000, 0 );   /* Verificar el funcionamiento de la pantalla */
-}
+//start_whatchdog_LCD(void)   /* Watchdog */
+//{
+//    //wiced_uart_transmit_bytes(WICED_UART_1,"Init timer\n", strlen("Init timer\n"));
+//    wiced_rtos_register_timed_event( &Pantalla_guardian, WICED_NETWORKING_WORKER_THREAD, &Pantalla_T,4000, 0 );   /* Verificar el funcionamiento de la pantalla */
+//}
 
 static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
 
@@ -112,14 +112,14 @@ static wiced_result_t Acarreo_V( void ){    /* Acarreos HVT */
     {
         if(strlen(log_accarreos.mac_bt)!=0)
         {  /* Si se ingreso una mac entra aqui */
-//            wiced_filesystem_unmount(&fs_handle);
-//            init_sd(&fs_handle);
-//            read_data(ACARREO_ROOT,date_get(&i2c_rtc),&fs_handle);
 
             strcpy(log_accarreos.id,"700");
             //log_accarreos.id[strlen(id_count)]='\0';
-            //sprintf(_HVT_Text,"%s",data_to_json_acarreo(&log_accarreos,s_Mac_W));
-            strcpy(_HVT_Text,data_to_json_acarreo(&log_accarreos,s_Mac_W));
+            //if()
+            //{
+                screen_checker(); /* Si la pantalla se logra inicializar correctamente hara el metodo de ivan */
+                strcpy(_HVT_Text,data_to_json_acarreo(&log_accarreos,s_Mac_W));
+            //}
             //printf("HVT;%s\n",_HVT_Text);
 
             memset(log_accarreos.date,NULL,12);
