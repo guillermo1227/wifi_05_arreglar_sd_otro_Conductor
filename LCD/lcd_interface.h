@@ -300,6 +300,7 @@ void Set_Warning(u8g_t* u8g,uint8_t count,unsigned char* buffer_in,char* c_l,cha
      /* Conductor agregado */
      if(_flag_D_in == WICED_TRUE )
      {
+
          u8g_SetFont(u8g, u8g_font_gdr10);
          u8g_SetFontPosTop(u8g);
          u8g_DrawStr(u8g,110,0,"C");

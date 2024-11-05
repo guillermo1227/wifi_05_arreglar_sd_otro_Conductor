@@ -189,7 +189,7 @@ void main_uart(wiced_thread_arg_t arg){
                     lcd_data_update(rx_buffer3,&count_v,&count_l,&proximity);
                     lcd_fallen_update(rx_buffer3,&lcd_fallen);      //Aqui si llega BNM y BEAC ---> Hombre caido o ago asi
 //                    SEND_OTA(rx_buffer3);
-                    data_file_write(rx_buffer3);       /* HE, aqui solo se lee GEOSF */
+                    data_file_write(rx_buffer3);       /* HE, aqui solo se lee GEOSF, guardado de Beacons */
 //                    get_join_macbt(rx_buffer3);
 //                    collision_event_macbt(rx_buffer3);
 //                    collision_event_beacon(rx_buffer3);
